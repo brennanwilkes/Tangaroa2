@@ -147,21 +147,47 @@ float islandHeight(vec3 coord){
 	base_noise *= distance_percent(xx,yy);
 	base_noise = pow(max(base_noise,0.1)-0.1,raise_exp)*raise_exp;
 	
+	base_noise *= 2.0;
+	
 	return base_noise;
 }
 
-void vertex() {
-    float base_noise = islandHeight(vec3(UV, TIME));
+float shallows(float h){
+	return float(h < 0.05);
+}
+float beach(float h){
+	return float(h >= 0.05 && h < 0.15);
+}
+float grass1(float h){
+	return float(h >= 0.15 && h < 0.6);
+}
+float grass2(float h){
+	return float(h >= 0.6 && h < 1.6);
+}
+float grass3(float h){
+	return float(h >= 1.6 && h < 3.4);
+}
+float rock1(float h){
+	return float(h >= 3.4);
+}
 
+
+float calc_r(float h){
+	return shallows(h)*0.047 + beach(h)*0.816 + grass1(h)*0.345 + grass2(h)*0.153 + grass3(h)*0.298 + rock1(h)*0.584;
+}
+float calc_g(float h){
+	return shallows(h)*0.286 + beach(h)*0.671 + grass1(h)*0.494 + grass2(h)*0.298 + grass3(h)*0.212 + rock1(h)*0.586;
+}
+float calc_b(float h){
+	return shallows(h)*0.695 + beach(h)*0.463 + grass1(h)*0.192 + grass2(h)*0.0 + grass3(h)*0.0 + rock1(h)*0.533;
+}
+
+void vertex() {
+    float height = islandHeight(vec3(UV, TIME));
+
+	COLOR.rgb = vec3(calc_r(height),calc_g(height),calc_b(height));
 	
-	COLOR.rb = vec2(0.0);
-	COLOR.g = max(0.25,base_noise/2.0);
-	if(base_noise < 0.01){
-		COLOR.rg = vec2(0.0);
-		COLOR.b = 0.15;
-	}
-	//COLOR.rgb = vec3(base_noise);
-	VERTEX.y = base_noise;
+	VERTEX.y = height;
 	
 	vec2 e = vec2(0.01, 0.0);
 	vec3 normal = normalize(vec3(islandHeight(vec3(VERTEX.xz - e,TIME)) - islandHeight(vec3(VERTEX.xz + e,TIME)), 2.0 * e.x, islandHeight(vec3(VERTEX.xz - e.yx,TIME)) - islandHeight(vec3(VERTEX.xz + e.yx,TIME))));
