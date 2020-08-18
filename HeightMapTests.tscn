@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://noiseMesh-material.tres" type="Material" id=1]
+
+[sub_resource type="PlaneMesh" id=1]
+material = ExtResource( 1 )
+size = Vector2( 25, 25 )
+subdivide_width = 50
+subdivide_depth = 50
+
+[node name="HeightMapTests" type="Spatial"]
+
+[node name="heightmap" type="CSGMesh" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5997, 2.38089, 5.59751 )
+mesh = SubResource( 1 )
+material = ExtResource( 1 )

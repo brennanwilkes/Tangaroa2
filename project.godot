@@ -16,6 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Tangaroa2"
+run/main_scene="res://demo2d.tscn"
 config/icon="res://icon.png"
 
 [rendering]
