@@ -152,8 +152,11 @@ float islandHeight(vec3 coord){
 	return base_noise;
 }
 
+float deep(float h){
+	return float(h==0.0);
+}
 float shallows(float h){
-	return float(h < 0.05);
+	return float(h < 0.05 && h > 0.0);
 }
 float beach(float h){
 	return float(h >= 0.05 && h < 0.15);
@@ -173,13 +176,13 @@ float rock1(float h){
 
 
 float calc_r(float h){
-	return shallows(h)*0.047 + beach(h)*0.816 + grass1(h)*0.345 + grass2(h)*0.153 + grass3(h)*0.298 + rock1(h)*0.584;
+	return deep(h)*0.0 + shallows(h)*0.047 + beach(h)*0.816 + grass1(h)*0.345 + grass2(h)*0.153 + grass3(h)*0.298 + rock1(h)*0.584;
 }
 float calc_g(float h){
-	return shallows(h)*0.286 + beach(h)*0.671 + grass1(h)*0.494 + grass2(h)*0.298 + grass3(h)*0.212 + rock1(h)*0.586;
+	return deep(h)*0.027 + shallows(h)*0.286 + beach(h)*0.671 + grass1(h)*0.494 + grass2(h)*0.298 + grass3(h)*0.212 + rock1(h)*0.586;
 }
 float calc_b(float h){
-	return shallows(h)*0.695 + beach(h)*0.463 + grass1(h)*0.192 + grass2(h)*0.0 + grass3(h)*0.0 + rock1(h)*0.533;
+	return deep(h)*0.439 + shallows(h)*0.695 + beach(h)*0.463 + grass1(h)*0.192 + grass2(h)*0.0 + grass3(h)*0.0 + rock1(h)*0.533;
 }
 
 void vertex() {
