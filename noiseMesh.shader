@@ -1,14 +1,18 @@
 shader_type spatial;
-render_mode unshaded;
+//render_mode unshaded;
 
 
 uniform uint seed = uint(1);
-uniform vec2 offset = vec2(0,0);
+uniform vec3 offset = vec3(0,0,0);
 uniform float speed = 1;
+
 uniform float scale = 1;
 uniform int octaves = 4;
 uniform float persistence = 2.0;
 uniform float lacunarity = 0.5;
+
+uniform float raise_exp = 2.0;
+
 
 vec3 mod289_3(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -116,7 +120,7 @@ float fractalNoise3d(vec3 coord){
 		amp *= persistence;
 		freq *= lacunarity;
 	}
-	return value / normal * 0.5 + 0.5;
+	return max(0.0,value / normal * 0.5 + 0.5);
 }
 
 float simple_hash(uint val){
@@ -127,14 +131,42 @@ float simple_hash(uint val){
 }
 
 float distance_percent(float x, float y){
-	return 0.5-6.0*(pow(0.5-x,2) + pow(0.5-y,2)); 
+	return 2.0-8.0*(pow(0.5-x,2.0) + pow(0.5-y,2.0)); 
+}
+
+float islandHeight(vec3 coord){
+	float xx = coord.x;
+	float yy = coord.y;
+	
+	coord.xy += offset.xy;
+	coord.xy *= scale;
+	coord.z *= speed;
+	coord.z += simple_hash(seed) + offset.z;
+	
+	float base_noise = fractalNoise3d(coord);
+	base_noise *= distance_percent(xx,yy);
+	base_noise = pow(max(base_noise,0.1)-0.1,raise_exp)*raise_exp;
+	
+	return base_noise;
 }
 
 void vertex() {
-    float base_noise = fractalNoise3d(vec3(vec2(UV + offset) * scale, TIME*speed + simple_hash(seed)));
-	//base_noise *= distance_percent(UV.x,UV.y);
-	//COLOR.xyz = vec3(base_noise);
-	VERTEX.y += base_noise;
+    float base_noise = islandHeight(vec3(UV, TIME));
+
+	
+	COLOR.rb = vec2(0.0);
+	COLOR.g = max(0.25,base_noise/2.0);
+	if(base_noise < 0.01){
+		COLOR.rg = vec2(0.0);
+		COLOR.b = 0.15;
+	}
+	//COLOR.rgb = vec3(base_noise);
+	VERTEX.y = base_noise;
+	
+	vec2 e = vec2(0.01, 0.0);
+	vec3 normal = normalize(vec3(islandHeight(vec3(VERTEX.xz - e,TIME)) - islandHeight(vec3(VERTEX.xz + e,TIME)), 2.0 * e.x, islandHeight(vec3(VERTEX.xz - e.yx,TIME)) - islandHeight(vec3(VERTEX.xz + e.yx,TIME))));
+	NORMAL = normal;
+	
 }
 void fragment(){
   ALBEDO = COLOR.xyz;

@@ -5,9 +5,10 @@
 [resource]
 shader = ExtResource( 1 )
 shader_param/seed = 9
-shader_param/offset = Vector2( 1.884, 0 )
-shader_param/speed = 1.0
-shader_param/scale = 6.0
-shader_param/octaves = 2
-shader_param/persistence = -0.471
-shader_param/lacunarity = 0.5
+shader_param/offset = Vector3( 0, 0, 18.175 )
+shader_param/speed = 2.0
+shader_param/scale = 25.0
+shader_param/octaves = 8
+shader_param/persistence = 2.0
+shader_param/lacunarity = 0.75
+shader_param/raise_exp = 2.25

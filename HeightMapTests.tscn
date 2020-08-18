@@ -5,12 +5,20 @@
 [sub_resource type="PlaneMesh" id=1]
 material = ExtResource( 1 )
 size = Vector2( 25, 25 )
-subdivide_width = 50
-subdivide_depth = 50
+subdivide_width = 25
+subdivide_depth = 25
 
 [node name="HeightMapTests" type="Spatial"]
 
+[node name="OmniLight" type="OmniLight" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.30479, 8.24381, 16.2824 )
+light_color = Color( 0.992157, 0.933333, 0.0235294, 1 )
+light_energy = 2.37
+shadow_enabled = true
+shadow_bias = 2.41
+omni_range = 26.2923
+
 [node name="heightmap" type="CSGMesh" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5997, 2.38089, 5.59751 )
+transform = Transform( 0.999922, 0.0124889, -0.000425842, -0.0124888, 0.999922, 5.6684e-05, 0.000426517, -5.13612e-05, 1, -6.73782, 2.17688, 4.92705 )
 mesh = SubResource( 1 )
 material = ExtResource( 1 )
