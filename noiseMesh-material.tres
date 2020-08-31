@@ -4,7 +4,7 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/seed = 5
+shader_param/seed = 0
 shader_param/offset = Vector3( 0, 0, 0 )
 shader_param/speed = 0.15
 shader_param/scale = 28.0

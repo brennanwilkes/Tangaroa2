@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://OneTimeNoiseMesh.gd" type="Script" id=1]
+[ext_resource path="res://OneTimeNoiseTexture.tscn" type="PackedScene" id=2]
+[ext_resource path="res://vertexFromHeightMapMaterial.tres" type="Material" id=3]
+
+[sub_resource type="PlaneMesh" id=1]
+size = Vector2( 100, 100 )
+subdivide_width = 100
+subdivide_depth = 100
+
+[node name="OneTimeNoiseMesh" type="CSGMesh"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0922928 )
+mesh = SubResource( 1 )
+material = ExtResource( 3 )
+script = ExtResource( 1 )
+
+[node name="OneTimeNoiseTexture" parent="." instance=ExtResource( 2 )]
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 0.285889, 0.368781, -0.884459, 0, 0.922982, 0.384843, 0.958263, -0.110022, 0.26387, -53.9078, 31.0079, 0 )
