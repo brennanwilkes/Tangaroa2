@@ -28,7 +28,7 @@ func generate_texture():
 	img.unlock();
 	var imageTexture = ImageTexture.new();
 	imageTexture.create_from_image(img);
-	print(imageTexture)
+
 	return imageTexture;
 
 func update_noise_settings():
@@ -40,17 +40,17 @@ func update_noise_settings():
 
 func update_texture():
 	self.texture = generate_texture();
+	
+func get_noise_height(coord):
+	var colour = noise.get_noise_3d(coord.x*noise_scale.x + noise_shift.x,coord.y*noise_scale.y + noise_shift.y , noise_shift.z);
+	colour = (colour+1)/2;
+	return colour;
 
 func update_heightmap_data():
-	var colour
 	for x in range(noise_size.x):
 		height_data.append([]);
 		for y in range(noise_size.y):
-			colour = noise.get_noise_3d(x*noise_scale.x + noise_shift.x,y*noise_scale.y + noise_shift.y , noise_shift.z);
-			colour += 1;
-			colour /= 2;
-			
-			height_data[x].append(colour);
+			height_data[x].append(get_noise_height(Vector2(x,y)));
 
 func _ready():
 	img = Image.new();
@@ -59,7 +59,7 @@ func _ready():
 	noise = OpenSimplexNoise.new();
 	update_noise_settings();
 	
-	update_heightmap_data();
+	#update_heightmap_data();
 	#update_texture();
 	
 
