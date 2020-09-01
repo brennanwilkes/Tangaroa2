@@ -14,7 +14,6 @@ mesh = SubResource( 1 )
 script = ExtResource( 1 )
 anim_speed = 5.0
 amplitude = 15.0
-noise_size = Vector2( 25, 25 )
 noise_scale = Vector2( 5, 5 )
 seed_num = 2
 
