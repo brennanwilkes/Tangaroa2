@@ -15,6 +15,8 @@ export var period = 64.0;
 export var persistence = 0.5;
 export var seed_num = 0;
 
+var total_time = 0;
+
 var noise_mesh = self.get_mesh();
 
 func update_noise_settings():
@@ -93,6 +95,13 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	heightMap.noise_shift.z += anim_speed * delta;
-	update_mesh();
+	total_time += delta;
+	
+	#if(total_time > 2.5):
+	#	total_time = 0;
+	#	seed_num += 1;
+	#	update_noise_settings();
+	
+	#heightMap.noise_shift.z += anim_speed * delta;
+	#update_mesh();
 

@@ -12,11 +12,10 @@ subdivide_depth = 25
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0922928 )
 mesh = SubResource( 1 )
 script = ExtResource( 1 )
-anim_speed = 4.0
+anim_speed = 5.0
 amplitude = 15.0
 noise_size = Vector2( 25, 25 )
 noise_scale = Vector2( 5, 5 )
-persistence = 0.5
 seed_num = 2
 
 [node name="OneTimeNoiseTexture" parent="." instance=ExtResource( 2 )]
