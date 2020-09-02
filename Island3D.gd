@@ -1,21 +1,33 @@
 extends CSGMesh
 
 
-export var amplitude = 15.0;
+export var noise_amplitude = 2.5;
+export var noise_power = 2.25;
 
-export var noise_size : Vector2 = Vector2(50.0,50.0);
-export var noise_precision : Vector2 = Vector2(4,4);
-export var noise_scale = Vector2(12.5,12.5);
+
+export var noise_size : Vector2 = Vector2(50,50);
+export var noise_precision : Vector2 = Vector2(1,1);
+export var noise_scale = Vector2(4.0,4.0);
 export var noise_shift = Vector3(0.0,0.0,0.0);
 
 export var noise_lacunarity = 2.0;
-export var noise_octaves = 8;
+export var noise_octaves = 4;
 export var noise_period = 64.0;
-export var noise_persistence = 0.5;
+export var noise_persistence = 0.35;
 export var noise_seed = 0;
+
+
+export var ridged_noise_amplitude = 1.5;
+export var ridged_noise_power = 6;
+export var ridged_noise_scale = Vector2(2,2);
 
 onready var noise_mesh = self.get_mesh();
 onready var noiseGenerator = OpenSimplexNoise.new();
+onready var ridgedNoiseGenerator = OpenSimplexNoise.new();
+
+
+export var liveRefresh = false;
+export var animate = false;
 
 
 
@@ -32,9 +44,6 @@ func circle_distance(coord : Vector2):
 	var dis = distance(coord,Vector2(0.0,0.0));
 	dis /= MAX_CIRCLE_DISTANCE;
 	
-	#dis = smin(pow(dis,1/4),pow(dis+0.5,4),0.85);
-	#dis = pow(dis,0.15);
-	#dis = pow(dis+0.2,4)
 	dis = smin(pow(dis,0.15),pow(dis+0.5,4),0.999999)
 	return clamp(1 - dis,0,1);
 
@@ -46,29 +55,53 @@ func update_noise_settings():
 	noiseGenerator.persistence = noise_persistence;
 	noiseGenerator.lacunarity = noise_lacunarity;
 	
-func get_transformed_noise_3d(coord):
-	return noiseGenerator.get_noise_3d(coord.x*noise_scale.x + noise_shift.x,coord.y*noise_scale.y + noise_shift.y , noise_shift.z);
+	ridgedNoiseGenerator.seed = noise_seed;
+	ridgedNoiseGenerator.octaves = noise_octaves;
+	ridgedNoiseGenerator.period = noise_period;
+	ridgedNoiseGenerator.persistence = noise_persistence;
+	ridgedNoiseGenerator.lacunarity = noise_lacunarity;
+	
+func get_transformed_noise_3d(coord : Vector2, generator, scale_factor):
+	return generator.get_noise_3d(coord.x*scale_factor.x + noise_shift.x,coord.y*scale_factor.y + noise_shift.y , noise_shift.z);
 	
 
 func get_noise_mask(coord : Vector2, midpoint : float):
-	return 1 if get_transformed_noise_3d(coord) > midpoint else -1;
+	return 1 if get_transformed_noise_3d(coord, noiseGenerator, noise_scale) > midpoint else -1;
 
+func get_ridged_noise(coord : Vector2):
+	var height =  1 - abs(get_transformed_noise_3d(coord, ridgedNoiseGenerator, ridged_noise_scale));
+	height *= ridged_noise_amplitude;
+	height = pow(height,ridged_noise_power);
+	return height;
 
 func get_noise_height(coord : Vector2):
-	var height = get_transformed_noise_3d(coord);
+	var height = get_transformed_noise_3d(coord, noiseGenerator, noise_scale);
 	height = (height+1)/2;
+	
+	height *= noise_amplitude;
+	height = pow(height,noise_power);
+	
 	return height;
 
 func get_island_height(coord : Vector2):
 	var height =  get_noise_height(coord);
+	var ridges = get_ridged_noise(coord);
+	
+	height += ridges;
+	
+	
+	
 	height *= circle_distance(coord);
-	height *= amplitude;
 	
 	if(height < 0.1):
-		var oldseed = noiseGenerator.seed;
 		noiseGenerator.seed += 100;
+		var old_scale = noise_scale;
+		#noise_scale = Vector2(5,5);
+		
 		height *= get_noise_mask(coord, 0.25);
-		noiseGenerator.seed = oldseed;
+		
+		noise_scale = old_scale;
+		noiseGenerator.seed = noise_seed;
 	
 	return height;
 
@@ -106,5 +139,9 @@ func _ready():
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	if liveRefresh:
+		if animate:
+			noise_shift.z += delta * 50;
+		update_noise_settings();
+		update_mesh();
