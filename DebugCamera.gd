@@ -1,6 +1,6 @@
 extends Camera
 
-export var speed = 0.1;
+export var speed = 0.25;
 
 func _process(delta):
 	var movement = Vector3(0.0,0.0,0.0);
@@ -14,7 +14,7 @@ func _process(delta):
 		movement += Vector3(speed,0.0,0.0);
 	
 	#2d Rotation matrix
-	var ang = self.rotation.y * -1;
+	var ang = fmod(self.rotation.y + (PI*2), (PI*2)) * -1;
 	movement.x = movement.x * cos(ang) - movement.z * sin(ang);
 	movement.z = movement.x * sin(ang) + movement.z * cos(ang);
 	
