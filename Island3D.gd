@@ -5,7 +5,7 @@ export var noise_amplitude = 2.5;
 export var noise_power = 2.25;
 
 
-export var noise_size : Vector2 = Vector2(50,50);
+export var noise_size : Vector2 = Vector2(100,100);
 export var noise_precision : Vector2 = Vector2(1,1);
 export var noise_scale = Vector2(4.0,4.0);
 export var noise_shift = Vector3(0.0,0.0,0.0);
@@ -93,15 +93,14 @@ func get_island_height(coord : Vector2):
 	
 	height *= circle_distance(coord);
 	
-	if(height < 0.1):
+	if(height < 0.2):
 		noiseGenerator.seed += 100;
-		var old_scale = noise_scale;
-		#noise_scale = Vector2(5,5);
-		
-		height *= get_noise_mask(coord, 0.25);
-		
-		noise_scale = old_scale;
+		#height *= get_noise_mask(coord, 0.25);
+		height -= (get_transformed_noise_3d(coord, noiseGenerator, noise_scale)+1)/30;
 		noiseGenerator.seed = noise_seed;
+	
+	if(height < 0.01):
+		height = 0;
 	
 	return height;
 
@@ -119,18 +118,21 @@ func update_mesh():
 	
 	for i in range(mdt.get_vertex_count()):
 		var vtx = mdt.get_vertex(i)
-		vtx.y = get_island_height(Vector2(vtx.x,vtx.z));	
-		mdt.set_vertex(i, vtx)
+		vtx.y = get_island_height(Vector2(vtx.x,vtx.z));
+		if(vtx.y > 0):
+			mdt.set_vertex(i, vtx);
+		#Need to find a way to delete it
 	
 	
 	for s in range(array_plane.get_surface_count()):
 		array_plane.surface_remove(s)
 	
-	mdt.commit_to_surface(array_plane)
-	st.create_from(array_plane, 0)
-	st.generate_normals()
-	self.mesh = st.commit()
-
+	mdt.commit_to_surface(array_plane);
+	st.create_from(array_plane, 0);
+	st.generate_normals();
+	
+	self.mesh = st.commit();
+	
 
 func _ready():
 	update_noise_settings();

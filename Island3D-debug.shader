@@ -39,9 +39,22 @@ void vertex() {
 	
 	VERTEX.y = y * float(y >= 0.25) + float(y < 0.25 && y>=0.005)*0.01;
 	
-	COLOR.r = calc_r(y);
-	COLOR.g = calc_g(y);
-	COLOR.b = calc_b(y);
+	//COLOR.rgb = vec3(NORMAL.y);
+	
+	vec3 green = vec3(0.1,0.6,0.05);
+	vec3 brown = vec3(0.39,0.26,0.12);
+	
+	float norm = clamp(NORMAL.y - 0.75,0,1);
+	// 1 is flat, 0 is vertical
+	
+	//COLOR.rgb = vec3(norm);
+	
+	
+	COLOR.rgb = float(y >= 1.0) * (green * (norm) + brown * (1.0-norm)) + float(y < 1.0) * vec3(calc_r(y),calc_g(y),calc_b(y));
+	
+	//COLOR.r = calc_r(y);
+	//COLOR.g = calc_g(y);
+	//COLOR.b = calc_b(y);
 }
 
 
