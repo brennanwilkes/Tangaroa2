@@ -1,14 +1,18 @@
 extends CSGMesh
 
 
-export var noise_amplitude = 2.5;
+#export var noise_amplitude = 2.5;
+var noise_amplitude = 2.5;
 export var noise_power = 2.25;
 
 
 export var noise_size : Vector2 = Vector2(100,100);
 export var noise_precision : Vector2 = Vector2(1,1);
-export var noise_scale = Vector2(4.0,4.0);
 export var noise_shift = Vector3(0.0,0.0,0.0);
+
+#export var noise_scale = Vector2(4.0,4.0);
+var noise_scale = Vector2(4.0,4.0);
+
 
 export var noise_lacunarity = 2.0;
 export var noise_octaves = 4;
@@ -49,6 +53,13 @@ func circle_distance(coord : Vector2):
 
 
 func update_noise_settings():
+	
+	noise_scale.x = max(1,floor(400.0/noise_size.x));
+	noise_scale.y = max(1,floor(400.0/noise_size.y));
+	
+	noise_amplitude = 2.0 + min(noise_scale.x,noise_scale.y)/200.0;
+	
+	
 	noiseGenerator.seed = noise_seed;
 	noiseGenerator.octaves = noise_octaves;
 	noiseGenerator.period = noise_period;
@@ -87,16 +98,18 @@ func get_island_height(coord : Vector2):
 	var height =  get_noise_height(coord);
 	var ridges = get_ridged_noise(coord);
 	
+	var circle = circle_distance(coord);
+	height *= circle;
+	ridges *= pow(circle,1.25);
+	
 	height += ridges;
 	
 	
 	
-	height *= circle_distance(coord);
 	
-	if(height < 0.2):
+	if(height < 0.25):
 		noiseGenerator.seed += 100;
-		#height *= get_noise_mask(coord, 0.25);
-		height -= (get_transformed_noise_3d(coord, noiseGenerator, noise_scale)+1)/30;
+		height -= (get_transformed_noise_3d(coord, noiseGenerator, noise_scale)+1)/12;
 		noiseGenerator.seed = noise_seed;
 	
 	if(height < 0.01):
@@ -104,7 +117,7 @@ func get_island_height(coord : Vector2):
 	
 	return height;
 
-func update_mesh():
+func update_mesh(output : bool):
 	var st = SurfaceTool.new();
 	noise_mesh.subdivide_width = noise_precision.x * noise_size.x;
 	noise_mesh.subdivide_depth = noise_precision.y * noise_size.y;
@@ -116,12 +129,16 @@ func update_mesh():
 	var mdt = MeshDataTool.new();
 	mdt.create_from_surface(array_plane, 0);
 	
-	for i in range(mdt.get_vertex_count()):
+	var count = mdt.get_vertex_count();
+	for i in range(count):
 		var vtx = mdt.get_vertex(i)
 		vtx.y = get_island_height(Vector2(vtx.x,vtx.z));
 		if(vtx.y > 0):
 			mdt.set_vertex(i, vtx);
 		#Need to find a way to delete it
+		
+		#if(output):
+		#	print(floor(i/count * 100),'%');
 	
 	
 	for s in range(array_plane.get_surface_count()):
@@ -136,7 +153,7 @@ func update_mesh():
 
 func _ready():
 	update_noise_settings();
-	update_mesh();
+	update_mesh(true);
 
 
 
@@ -146,4 +163,4 @@ func _process(delta):
 		if animate:
 			noise_shift.z += delta * 50;
 		update_noise_settings();
-		update_mesh();
+		update_mesh(false);

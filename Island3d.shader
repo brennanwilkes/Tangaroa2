@@ -1,5 +1,11 @@
 shader_type spatial;
 
+uniform vec3 green = vec3(0.1,0.6,0.05);
+uniform vec3 brown = vec3(0.39,0.26,0.12);
+uniform vec3 beach = vec3(0.816,0.671,0.463);
+uniform vec3 deep = vec3(0.0,0.027,0.439);
+uniform vec3 shallow = vec3(0.047,0.286,0.695);
+
 vec3 blend(float val, float a, float b, vec3 c1, vec3 c2){
 	
 	vec3 fc1 = float(val <= a) * c1;
@@ -17,13 +23,7 @@ void vertex() {
 	
 	VERTEX.y = y * float(y >= 0.25) + float(y < 0.25 && y>=0.005)*0.01;
 	
-	//COLOR.rgb = vec3(NORMAL.y);
 	
-	vec3 green = vec3(0.1,0.6,0.05);
-	vec3 brown = vec3(0.39,0.26,0.12);
-	vec3 beach = vec3(0.816,0.671,0.463);
-	vec3 deep = vec3(0.0,0.027,0.439);
-	vec3 shallow = vec3(0.047,0.286,0.695);
 	
 	vec3 land = blend(NORMAL.y,0.75,1.0,brown,green);
 	land = blend(y,4.0,7.0,land,brown);
@@ -34,9 +34,6 @@ void vertex() {
 	
 	COLOR.rgb = blend(y,0.25,0.3,water,land);
 	
-	//COLOR.r = calc_r(y);
-	//COLOR.g = calc_g(y);
-	//COLOR.b = calc_b(y);
 }
 
 
