@@ -6,12 +6,12 @@ func _process(delta):
 	if Input.is_action_pressed("camera_forward") or Input.is_action_pressed("camera_backward") or Input.is_action_pressed("camera_left") or Input.is_action_pressed("camera_right"):
 		var ang = -1;
 		if Input.is_action_pressed("camera_forward"):
-			ang = PI;		
+			ang = PI;
 		elif Input.is_action_pressed("camera_backward"):
 			ang = PI*2;
 		if Input.is_action_pressed("camera_left"):
 			if ang==-1:
-				ang = PI*3/2
+				ang = PI*3/2;
 			else:
 				ang = (ang + PI*3/2)/2;
 		elif Input.is_action_pressed("camera_right"):
@@ -19,7 +19,6 @@ func _process(delta):
 				ang = PI/2;
 			else:
 				ang = (fmod(ang,PI*2) + PI/2)/2;
-			
 		
 		
 		self.translation.x += speed * sin(self.rotation.y + ang);

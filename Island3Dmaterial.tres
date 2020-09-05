@@ -4,7 +4,8 @@
 
 [resource]
 shader = ExtResource( 1 )
-shader_param/green = Vector3( 0.1, 0.6, 0.05 )
+shader_param/grey = Vector3( 0.365, 0.333, 0.294 )
+shader_param/grass = Vector3( 0.098, 0.191, 0.075 )
 shader_param/brown = Vector3( 0.39, 0.26, 0.12 )
 shader_param/beach = Vector3( 0.816, 0.671, 0.463 )
 shader_param/deep = Vector3( 0, 0.027, 0.439 )
