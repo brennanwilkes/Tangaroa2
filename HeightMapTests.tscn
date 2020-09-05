@@ -28,13 +28,13 @@ size = Vector2( 1, 1 )
 script = ExtResource( 3 )
 
 [node name="OmniLight" type="OmniLight" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -22.5269, 11.9443, 22.1142 )
-light_energy = 0.5
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.04431, 19.6148, 0 )
 light_indirect_energy = 0.5
 light_specular = 0.0
 shadow_enabled = true
+shadow_color = Color( 0.0196078, 0.0156863, 0.0156863, 1 )
 shadow_bias = 2.41
-omni_range = 47.2069
+omni_range = 47.8325
 
 [node name="Island3D" parent="." instance=ExtResource( 1 )]
 

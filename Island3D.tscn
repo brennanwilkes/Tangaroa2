@@ -12,4 +12,4 @@ subdivide_depth = 10
 mesh = SubResource( 1 )
 material = ExtResource( 2 )
 script = ExtResource( 1 )
-noise_size = Vector2( 200, 200 )
+noise_precision = Vector2( 2, 2 )
